@@ -11,7 +11,7 @@ const VdMessage = (function() {
     function createMessage(type, message) {
         const icon = iconMap[type] || iconMap.info;
         const htmlMessage = `
-            <div class="vd_message ${type} animate__animated animate__faster animate__fadeInDown" style="position: relative; top: 0;">
+            <div class="vd_message ${type} animate__animated animate__faster animate__fadeInDown">
                 <div class="vd_message_main">
                     <div class="vd_message_icon">
                         ${icon}
@@ -40,7 +40,6 @@ const VdMessage = (function() {
         messages.push(newMessage);
         messageContainer.append(newMessage);
 
-        updateMessagePositions();
         newMessage.fadeIn(5, function() {
             setTimeout(() => {
                 $(this).removeClass('animate__fadeInDown').addClass('animate__fadeOutUp');
@@ -51,13 +50,6 @@ const VdMessage = (function() {
         });
     }
 
-    function updateMessagePositions() {
-        const messageContainer = $(".vd_message_js");
-        const messages = messageContainer.children();
-        messages.each(function(index) {
-            $(this).css('top', `${index * 6}px`); 
-        });
-    }
 
     return {
         show: displayMessage

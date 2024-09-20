@@ -57,7 +57,6 @@ const VdMessage = (function () {
   function updateMessagePositions() {
     const messageContainer = $(".vd_message_js");
     const messages = messageContainer.children();
-
     // Tạo khoảng cách giữa các thông báo, ví dụ mỗi thông báo cách nhau 6% theo chiều dọc
     messages.each(function (index) {
       $(this).css({

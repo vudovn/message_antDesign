@@ -1,17 +1,18 @@
-const VdMessage = (function() {
-    const iconMap = {
-        success: '<i class="bi bi-check-circle-fill"></i>',
-        warning: '<i class="bi bi-exclamation-circle-fill"></i>',
-        error: '<i class="bi bi-x-circle-fill"></i>',
-        info: '<i class="bi bi-info-circle-fill"></i>'
-    };
+const VdMessage = (function () {
+  const iconMap = {
+    success: '<i class="bi bi-check-circle-fill"></i>',
+    warning: '<i class="bi bi-exclamation-circle-fill"></i>',
+    error: '<i class="bi bi-x-circle-fill"></i>',
+    info: '<i class="bi bi-info-circle-fill"></i>',
+  };
 
-    const messages = []; 
+  const messages = [];
+  // <div class="vd_message ${type} animate__animated animate__faster animate__fadeInDown" style="position: relative; top: 0;">
 
-    function createMessage(type, message) {
-        const icon = iconMap[type] || iconMap.info;
-        const htmlMessage = `
-            <div class="vd_message ${type} animate__animated animate__faster animate__fadeInDown" style="position: relative; top: 0;">
+  function createMessage(type, message) {
+    const icon = iconMap[type] || iconMap.info;
+    const htmlMessage = `
+            <div class="vd_message ${type} animate__animated animate__faster animate__fadeInDown">
                 <div class="vd_message_main">
                     <div class="vd_message_icon">
                         ${icon}
@@ -23,45 +24,52 @@ const VdMessage = (function() {
             </div>
         `;
 
-        return htmlMessage;
+    return htmlMessage;
+  }
+
+  function displayMessage(type, message) {
+    const htmlMessage = createMessage(type, message);
+    const messageContainer = $(".vd_message_js");
+
+    const maxMessages = 3;
+    if (messages.length >= maxMessages) {
+      const firstMessage = messages.shift();
+      firstMessage.remove();
     }
 
-    function displayMessage(type, message) {
-        const htmlMessage = createMessage(type, message);
-        const messageContainer = $(".vd_message_js");
+    const newMessage = $(htmlMessage);
+    messages.push(newMessage);
+    messageContainer.append(newMessage);
 
-        const maxMessages = 5; 
-        if (messages.length >= maxMessages) {
-            const firstMessage = messages.shift(); 
-            firstMessage.remove(); 
-        }
+    updateMessagePositions();
+    newMessage.fadeIn(5, function () {
+      setTimeout(() => {
+        $(this)
+          .removeClass("animate__fadeInDown")
+          .addClass("animate__fadeOutUp");
+        setTimeout(() => {
+          $(this).remove();
+        }, 1000);
+      }, 3000);
+    });
+  }
 
-        const newMessage = $(htmlMessage);
-        messages.push(newMessage);
-        messageContainer.append(newMessage);
+  function updateMessagePositions() {
+    const messageContainer = $(".vd_message_js");
+    const messages = messageContainer.children();
 
-        updateMessagePositions();
-        newMessage.fadeIn(5, function() {
-            setTimeout(() => {
-                $(this).removeClass('animate__fadeInDown').addClass('animate__fadeOutUp');
-                setTimeout(() => {
-                    $(this).remove();
-                }, 1000);
-            }, 3000); 
-        });
-    }
+    // Tạo khoảng cách giữa các thông báo, ví dụ mỗi thông báo cách nhau 6% theo chiều dọc
+    messages.each(function (index) {
+      $(this).css({
+        top: `${index * 3.2}rem`, // Sử dụng "rem" hoặc "%" tuỳ thuộc vào giao diện của bạn
+        position: "absolute", // Đảm bảo các thông báo được xếp chồng lên nhau và cách đều
+      });
+    });
+  }
 
-    function updateMessagePositions() {
-        const messageContainer = $(".vd_message_js");
-        const messages = messageContainer.children();
-        messages.each(function(index) {
-            $(this).css('top', `${index * 6}px`); 
-        });
-    }
-
-    return {
-        show: displayMessage
-    };
+  return {
+    show: displayMessage,
+  };
 })();
 
 // // Sử dụng thư viện

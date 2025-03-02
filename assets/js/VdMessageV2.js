@@ -1,5 +1,5 @@
 class VdMessage {
-  constructor() {
+  constructor(maxMessages = 2) {
     this.iconMap = {
       success: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
                   <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
@@ -13,93 +13,22 @@ class VdMessage {
       info: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16">
               <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2"/>
             </svg>`,
+      loading: `
+          <div class="spinner-border spinner-border-sm text-primary" role="status">
+  <span class="visually-hidden">Loading...</span>
+</div>
+      `,
     };
 
     this.messages = [];
-    this.maxMessages = 2;
+    this.maxMessages = maxMessages;
     this.insertMessageContainer();
-    this.insertCSS();
   }
 
   insertMessageContainer() {
-    // Tạo và chèn thẻ div với class 'vd_message_js' vào body nếu chưa tồn tại
     if ($(".vd_message_js").length === 0) {
       const messageContainer = $('<div class="vd_message_js"></div>');
       $("body").append(messageContainer);
-    }
-  }
-
-  insertCSS() {
-    // Thêm CSS trực tiếp vào trang nếu cần
-    const css = `
-            .vd_message_js {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: fixed;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 2010;
-            transition: 0.3s;
-            position: fixed;
-            }
-
-            .vd_message {
-            padding: 9px 12px;
-            border-radius: 12px;
-            box-shadow: 0 6px 16px 0 rgba(0, 0, 0, 0.08),
-                0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
-            background: #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 10px;
-            transition: 0.3s;
-            width: auto;
-            position: absolute;
-            white-space: nowrap;
-            }
-
-            .vd_message_main {
-            display: flex;
-            gap: 5px;
-            align-items: center;
-            }
-
-            .vd_message_noti {
-            color: rgba(0, 0, 0, 0.88);
-            font-size: 14px;
-            line-height: 1.5714285714285714;
-            list-style: none;
-            pointer-events: none;
-            }
-
-            .vd_message_icon {
-              line-height: 0;
-            }
-
-            /* status */
-            .vd_message.success .vd_message_icon {
-            color: #52c41a;
-            }
-
-            .vd_message.error .vd_message_icon {
-            color: red;
-            }
-
-            .vd_message.warning .vd_message_icon {
-            color: orange;
-            }
-
-            .vd_message.info .vd_message_icon {
-            color: #0d6efd;
-            }
-      `;
-
-    // Chèn style vào head
-    if ($("#vd_message_style").length === 0) {
-      $('<style id="vd_message_style"></style>').text(css).appendTo("head");
     }
   }
 
@@ -149,11 +78,10 @@ class VdMessage {
   updateMessagePositions() {
     const messageContainer = $(".vd_message_js");
     const messages = messageContainer.children();
-    // Tạo khoảng cách giữa các thông báo, ví dụ mỗi thông báo cách nhau 3.2rem theo chiều dọc
     messages.each(function (index) {
       $(this).css({
         top: `${index * 3.2}rem`,
-        position: "absolute", // Đảm bảo các thông báo được xếp chồng lên nhau và cách đều
+        position: "absolute",
       });
     });
   }
@@ -169,5 +97,5 @@ class VdMessage {
 }
 
 // Sử dụng thư viện
-// messageVD.show("success", "This is a success message!");
-// messageVD.show("error", "This is an error message!", 5000);
+// messageVD.show("success", "message!");
+// messageVD.show("error", "message!", 5000);
